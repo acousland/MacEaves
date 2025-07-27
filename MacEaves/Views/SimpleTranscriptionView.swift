@@ -8,9 +8,11 @@ import CoreAudio
 
 struct SimpleTranscriptionView: View {
     @State private var speechRecognizer = SpeechRecognizer()
+    @StateObject private var openAIService = OpenAIService()
     @State private var isRunning = false
     @State private var errorWrapper: ErrorWrapper?
     @State private var isMonitoringOutput = false
+    @State private var lastSummarizedLength = 0
     
     var body: some View {
         VStack(spacing: 20) {
@@ -192,18 +194,92 @@ struct SimpleTranscriptionView: View {
                         Text("Listening...")
                             .font(.caption)
                             .foregroundColor(.secondary)
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            Task {
+                                await generateSummary()
+                            }
+                        }) {
+                            HStack(spacing: 4) {
+                                if openAIService.isGeneratingSummary {
+                                    ProgressView()
+                                        .scaleEffect(0.7)
+                                } else {
+                                    Image(systemName: "doc.text.magnifyingglass")
+                                }
+                                Text("Summarize")
+                            }
+                            .font(.caption)
+                            .foregroundColor(.blue)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .disabled(openAIService.isGeneratingSummary || speechRecognizer.transcript.isEmpty)
                     }
                     
-                    ScrollView {
-                        Text(speechRecognizer.transcript.isEmpty ? "Speak now..." : speechRecognizer.transcript)
-                            .font(.body)
-                            .foregroundColor(speechRecognizer.transcript.isEmpty ? .secondary : .primary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding()
+                    // Transcript Box
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Transcript")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(.secondary)
+                        
+                        ScrollView {
+                            Text(speechRecognizer.transcript.isEmpty ? "Speak now..." : speechRecognizer.transcript)
+                                .font(.body)
+                                .foregroundColor(speechRecognizer.transcript.isEmpty ? .secondary : .primary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding()
+                        }
+                        .frame(width: 400, height: 120)
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(8)
                     }
-                    .frame(width: 400, height: 150)
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(8)
+                    
+                    // Summary Box
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text("AI Summary")
+                                .font(.caption)
+                                .fontWeight(.medium)
+                                .foregroundColor(.secondary)
+                            
+                            if openAIService.isGeneratingSummary {
+                                ProgressView()
+                                    .scaleEffect(0.6)
+                            }
+                            
+                            if let error = openAIService.lastError {
+                                Text("⚠️")
+                                    .foregroundColor(.orange)
+                                    .help("Error: \(error)")
+                            }
+                        }
+                        
+                        ScrollView {
+                            Text(openAIService.summary.isEmpty ? "Click 'Summarize' to generate an AI summary..." : openAIService.summary)
+                                .font(.body)
+                                .foregroundColor(openAIService.summary.isEmpty ? .secondary : .primary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding()
+                        }
+                        .frame(width: 400, height: 100)
+                        .background(Color.blue.opacity(0.05))
+                        .cornerRadius(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.blue.opacity(0.2), lineWidth: 1)
+                        )
+                    }
+                }
+                .onChange(of: speechRecognizer.transcript) { _, newTranscript in
+                    // Auto-summarize when transcript grows significantly
+                    if newTranscript.count > lastSummarizedLength + 500 {
+                        Task {
+                            await generateSummary()
+                        }
+                    }
                 }
             }
             
@@ -218,10 +294,14 @@ struct SimpleTranscriptionView: View {
             Text(errorWrapper?.error.localizedDescription ?? "Unknown error occurred")
         }
         .onAppear {
+            print("🏁 Debug: SimpleTranscriptionView appeared")
+            print("🤖 OpenAI Service initialized: \(openAIService)")
+            
             // Request permissions and initialize devices on appear
             Task {
                 await MainActor.run {
                     speechRecognizer.refreshAudioDevices()
+                    print("🔄 Audio devices refreshed")
                 }
             }
         }
@@ -236,6 +316,32 @@ struct SimpleTranscriptionView: View {
     private func stopTranscription() {
         speechRecognizer.stopTranscribing()
         isRunning = false
+    }
+    
+    @MainActor
+    private func generateSummary() async {
+        print("🎯 Debug: generateSummary() called")
+        print("📝 Current transcript: '\(speechRecognizer.transcript)'")
+        print("📏 Transcript length: \(speechRecognizer.transcript.count)")
+        
+        guard !speechRecognizer.transcript.isEmpty else { 
+            print("⚠️ Warning: Transcript is empty, skipping summary generation")
+            return 
+        }
+        
+        print("🚀 Starting OpenAI summary generation...")
+        
+        do {
+            try await openAIService.generateSummary(from: speechRecognizer.transcript)
+            lastSummarizedLength = speechRecognizer.transcript.count
+            print("✅ Summary generation completed successfully")
+        } catch {
+            let errorMessage = "Error generating summary: \(error)"
+            print("❌ \(errorMessage)")
+            
+            // Also update the error wrapper for user display
+            errorWrapper = ErrorWrapper(error: error, guidance: "Please check your internet connection and API key configuration.")
+        }
     }
 }
 
