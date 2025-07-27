@@ -10,62 +10,152 @@ struct SimpleTranscriptionView: View {
     @State private var speechRecognizer = SpeechRecognizer()
     @State private var isRunning = false
     @State private var errorWrapper: ErrorWrapper?
+    @State private var isMonitoringOutput = false
     
     var body: some View {
         VStack(spacing: 20) {
             Spacer()
             
-            // Audio Input Device Selector (only show when not running)
+            // Audio Device Configuration (only show when not running)
             if !isRunning {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Text("Audio Input Device")
+                VStack(spacing: 15) {
+                    // Mode Toggle
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Audio Source")
                             .font(.headline)
                             .foregroundColor(.primary)
                         
-                        Spacer()
-                        
-                        Button(action: {
-                            speechRecognizer.refreshAudioDevices()
-                        }) {
-                            Image(systemName: "arrow.clockwise")
-                                .foregroundColor(.blue)
+                        Picker("Audio Source", selection: $isMonitoringOutput) {
+                            Text("Microphone Input")
+                                .tag(false)
+                            Text("System Output")
+                                .tag(true)
                         }
-                        .buttonStyle(PlainButtonStyle())
-                        .help("Refresh audio devices")
-                    }
-                    
-                    Picker("Input Device", selection: Binding(
-                        get: { speechRecognizer.selectedInputDevice?.id ?? 0 },
-                        set: { newValue in
-                            if newValue == 0 {
+                        .pickerStyle(.segmented)
+                        .frame(width: 300)
+                        .onChange(of: isMonitoringOutput) { _, newValue in
+                            // Reset selections when switching modes
+                            if newValue {
                                 speechRecognizer.selectInputDevice(nil)
                             } else {
-                                let selectedDevice = speechRecognizer.availableInputDevices.first { $0.id == newValue }
-                                speechRecognizer.selectInputDevice(selectedDevice)
+                                speechRecognizer.selectOutputDevice(nil)
                             }
                         }
-                    )) {
-                        Text("Default Input")
-                            .tag(AudioDeviceID(0))
-                        
-                        ForEach(speechRecognizer.availableInputDevices, id: \.id) { device in
-                            Text(device.name)
-                                .tag(device.id)
-                        }
                     }
-                    .pickerStyle(.menu)
-                    .frame(width: 300)
                     
-                    // Show selected device info
-                    if let selectedDevice = speechRecognizer.selectedInputDevice {
-                        Text("Selected: \(selectedDevice.name)")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                    // Device Selector based on mode
+                    if isMonitoringOutput {
+                        // Output Device Selector
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Text("Output Device to Monitor")
+                                    .font(.subheadline)
+                                    .foregroundColor(.primary)
+                                
+                                Spacer()
+                                
+                                Button(action: {
+                                    speechRecognizer.refreshAudioDevices()
+                                }) {
+                                    Image(systemName: "arrow.clockwise")
+                                        .foregroundColor(.blue)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                .help("Refresh audio devices")
+                            }
+                            
+                            Picker("Output Device", selection: Binding(
+                                get: { speechRecognizer.selectedOutputDevice?.id ?? 0 },
+                                set: { newValue in
+                                    if newValue == 0 {
+                                        speechRecognizer.selectOutputDevice(nil)
+                                    } else {
+                                        let selectedDevice = speechRecognizer.availableOutputDevices.first { $0.id == newValue }
+                                        speechRecognizer.selectOutputDevice(selectedDevice)
+                                    }
+                                }
+                            )) {
+                                Text("Default Output")
+                                    .tag(AudioDeviceID(0))
+                                
+                                ForEach(speechRecognizer.availableOutputDevices, id: \.id) { device in
+                                    Text(device.name)
+                                        .tag(device.id)
+                                }
+                            }
+                            .pickerStyle(.menu)
+                            .frame(width: 300)
+                            
+                            // Show selected device info
+                            if let selectedDevice = speechRecognizer.selectedOutputDevice {
+                                Text("Monitoring: \(selectedDevice.name)")
+                                    .font(.caption)
+                                    .foregroundColor(.orange)
+                            } else {
+                                Text("Using system default output")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            
+                            // Info about output monitoring
+                            Text("💡 Use BlackHole or similar to route system audio")
+                                .font(.caption)
+                                .foregroundColor(.blue)
+                                .padding(.top, 4)
+                        }
                     } else {
-                        Text("Using system default input")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                        // Input Device Selector
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Text("Input Device")
+                                    .font(.subheadline)
+                                    .foregroundColor(.primary)
+                                
+                                Spacer()
+                                
+                                Button(action: {
+                                    speechRecognizer.refreshAudioDevices()
+                                }) {
+                                    Image(systemName: "arrow.clockwise")
+                                        .foregroundColor(.blue)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                .help("Refresh audio devices")
+                            }
+                            
+                            Picker("Input Device", selection: Binding(
+                                get: { speechRecognizer.selectedInputDevice?.id ?? 0 },
+                                set: { newValue in
+                                    if newValue == 0 {
+                                        speechRecognizer.selectInputDevice(nil)
+                                    } else {
+                                        let selectedDevice = speechRecognizer.availableInputDevices.first { $0.id == newValue }
+                                        speechRecognizer.selectInputDevice(selectedDevice)
+                                    }
+                                }
+                            )) {
+                                Text("Default Input")
+                                    .tag(AudioDeviceID(0))
+                                
+                                ForEach(speechRecognizer.availableInputDevices, id: \.id) { device in
+                                    Text(device.name)
+                                        .tag(device.id)
+                                }
+                            }
+                            .pickerStyle(.menu)
+                            .frame(width: 300)
+                            
+                            // Show selected device info
+                            if let selectedDevice = speechRecognizer.selectedInputDevice {
+                                Text("Selected: \(selectedDevice.name)")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            } else {
+                                Text("Using system default input")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
                     }
                 }
                 .padding(.bottom, 10)
@@ -128,8 +218,12 @@ struct SimpleTranscriptionView: View {
             Text(errorWrapper?.error.localizedDescription ?? "Unknown error occurred")
         }
         .onAppear {
-            // Request permissions on appear
-            speechRecognizer.refreshAudioDevices()
+            // Request permissions and initialize devices on appear
+            Task {
+                await MainActor.run {
+                    speechRecognizer.refreshAudioDevices()
+                }
+            }
         }
     }
     

@@ -7,55 +7,143 @@
         "key": "Error",
         "location": {
           "startingColumn": 16,
-          "startingLine": 123
+          "startingLine": 213
         }
       },
       {
         "comment": "",
-        "key": "Using system default input",
+        "key": "Audio Source",
         "location": {
           "startingColumn": 30,
-          "startingLine": 66
+          "startingLine": 24
         }
       },
       {
         "comment": "",
-        "key": "Selected: %@",
+        "key": "Audio Source",
         "location": {
-          "startingColumn": 30,
-          "startingLine": 62
+          "startingColumn": 32,
+          "startingLine": 28
         }
       },
       {
         "comment": "",
-        "key": "Input Device",
+        "key": "Microphone Input",
         "location": {
-          "startingColumn": 28,
-          "startingLine": 38
+          "startingColumn": 34,
+          "startingLine": 29
         }
       },
       {
         "comment": "",
-        "key": "Audio Input Device",
+        "key": "System Output",
         "location": {
-          "startingColumn": 30,
-          "startingLine": 22
+          "startingColumn": 34,
+          "startingLine": 31
+        }
+      },
+      {
+        "comment": "",
+        "key": "Using system default output",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 95
+        }
+      },
+      {
+        "comment": "",
+        "key": "Monitoring: %@",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 91
+        }
+      },
+      {
+        "comment": "",
+        "key": "💡 Use BlackHole or similar to route system audio",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 101
+        }
+      },
+      {
+        "comment": "",
+        "key": "Output Device",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 67
+        }
+      },
+      {
+        "comment": "",
+        "key": "Output Device to Monitor",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 51
         }
       },
       {
         "comment": "",
         "key": "Refresh audio devices",
         "location": {
-          "startingColumn": 31,
-          "startingLine": 35
+          "startingColumn": 39,
+          "startingLine": 64
+        }
+      },
+      {
+        "comment": "",
+        "key": "Default Output",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 78
+        }
+      },
+      {
+        "comment": "",
+        "key": "Using system default input",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 154
+        }
+      },
+      {
+        "comment": "",
+        "key": "Selected: %@",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 150
+        }
+      },
+      {
+        "comment": "",
+        "key": "Input Device",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 126
+        }
+      },
+      {
+        "comment": "",
+        "key": "Input Device",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 110
+        }
+      },
+      {
+        "comment": "",
+        "key": "Refresh audio devices",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 123
         }
       },
       {
         "comment": "",
         "key": "Default Input",
         "location": {
-          "startingColumn": 30,
-          "startingLine": 49
+          "startingColumn": 38,
+          "startingLine": 137
         }
       },
       {
@@ -63,7 +151,7 @@
         "key": "Stop",
         "location": {
           "startingColumn": 34,
-          "startingLine": 81
+          "startingLine": 171
         }
       },
       {
@@ -71,7 +159,7 @@
         "key": "Run",
         "location": {
           "startingColumn": 43,
-          "startingLine": 81
+          "startingLine": 171
         }
       },
       {
@@ -79,7 +167,7 @@
         "key": "Listening...",
         "location": {
           "startingColumn": 30,
-          "startingLine": 102
+          "startingLine": 192
         }
       },
       {
@@ -87,7 +175,7 @@
         "key": "OK",
         "location": {
           "startingColumn": 20,
-          "startingLine": 124
+          "startingLine": 214
         }
       }
     ]
