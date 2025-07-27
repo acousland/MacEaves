@@ -196,26 +196,6 @@ struct SimpleTranscriptionView: View {
                             .foregroundColor(.secondary)
                         
                         Spacer()
-                        
-                        Button(action: {
-                            Task {
-                                await generateSummary()
-                            }
-                        }) {
-                            HStack(spacing: 4) {
-                                if openAIService.isGeneratingSummary {
-                                    ProgressView()
-                                        .scaleEffect(0.7)
-                                } else {
-                                    Image(systemName: "doc.text.magnifyingglass")
-                                }
-                                Text("Summarize")
-                            }
-                            .font(.caption)
-                            .foregroundColor(.blue)
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                        .disabled(openAIService.isGeneratingSummary || speechRecognizer.transcript.isEmpty)
                     }
                     
                     // Transcript Box
@@ -240,15 +220,36 @@ struct SimpleTranscriptionView: View {
                     // Summary Box
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
-                            Text("AI Summary")
+                            Text("AI Analysis")
                                 .font(.caption)
                                 .fontWeight(.medium)
                                 .foregroundColor(.secondary)
                             
-                            if openAIService.isGeneratingSummary {
-                                ProgressView()
-                                    .scaleEffect(0.6)
+                            Spacer()
+                            
+                            Button(action: {
+                                Task {
+                                    await generateSummary()
+                                }
+                            }) {
+                                HStack(spacing: 4) {
+                                    if openAIService.isGeneratingSummary {
+                                        ProgressView()
+                                            .scaleEffect(0.7)
+                                    } else {
+                                        Image(systemName: "chart.bar.doc.horizontal")
+                                    }
+                                    Text("Analyse")
+                                }
+                                .font(.caption)
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(speechRecognizer.transcript.isEmpty ? Color.gray : Color.green)
+                                .cornerRadius(6)
                             }
+                            .buttonStyle(PlainButtonStyle())
+                            .disabled(openAIService.isGeneratingSummary || speechRecognizer.transcript.isEmpty)
                             
                             if let error = openAIService.lastError {
                                 Text("⚠️")
@@ -258,7 +259,7 @@ struct SimpleTranscriptionView: View {
                         }
                         
                         ScrollView {
-                            Text(openAIService.summary.isEmpty ? "Click 'Summarize' to generate an AI summary..." : openAIService.summary)
+                            Text(openAIService.summary.isEmpty ? "Click 'Analyse' to generate an AI analysis..." : openAIService.summary)
                                 .font(.body)
                                 .foregroundColor(openAIService.summary.isEmpty ? .secondary : .primary)
                                 .frame(maxWidth: .infinity, alignment: .leading)

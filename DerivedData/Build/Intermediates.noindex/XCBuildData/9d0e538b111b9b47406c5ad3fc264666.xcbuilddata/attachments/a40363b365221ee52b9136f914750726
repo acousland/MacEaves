@@ -1,4 +1,0 @@
-module ThemeKit {
-header "ThemeKit-Swift.h"
-export *
-}
