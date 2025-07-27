@@ -1,0 +1,4 @@
+module TimerKit {
+header "TimerKit-Swift.h"
+export *
+}

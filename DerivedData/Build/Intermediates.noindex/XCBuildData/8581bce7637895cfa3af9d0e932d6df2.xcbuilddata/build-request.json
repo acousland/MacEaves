@@ -1,0 +1,64 @@
+{
+  "buildCommand" : {
+    "command" : "build",
+    "skipDependencies" : false,
+    "style" : "buildOnly"
+  },
+  "configuredTargets" : [
+    {
+      "guid" : "c99d269ff6acee6df6d07fa5e2d5bd1370657295f00a42d2a8d74c8c2e8c723a"
+    }
+  ],
+  "containerPath" : "/Users/acousland/Documents/Code/MacEaves/MacEaves.xcodeproj",
+  "continueBuildingAfterErrors" : false,
+  "dependencyScope" : "workspace",
+  "enableIndexBuildArena" : false,
+  "hideShellScriptEnvironment" : false,
+  "parameters" : {
+    "action" : "build",
+    "activeArchitecture" : "arm64",
+    "activeRunDestination" : {
+      "disableOnlyActiveArch" : false,
+      "platform" : "macosx",
+      "sdk" : "macosx15.5",
+      "sdkVariant" : "macos",
+      "supportedArchitectures" : [
+        "arm64e",
+        "arm64",
+        "x86_64"
+      ],
+      "targetArchitecture" : "arm64"
+    },
+    "arenaInfo" : {
+      "buildIntermediatesPath" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex",
+      "buildProductsPath" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Products",
+      "derivedDataPath" : "/Users/acousland/Documents/Code/MacEaves/DerivedData",
+      "indexDataStoreFolderPath" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Index.noindex/DataStore",
+      "indexEnableDataStore" : true,
+      "indexPCHPath" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Index.noindex/PrecompiledHeaders",
+      "pchPath" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/PrecompiledHeaders"
+    },
+    "configurationName" : "Debug",
+    "overrides" : {
+      "commandLine" : {
+        "table" : {
+
+        }
+      },
+      "synthesized" : {
+        "table" : {
+          "ACTION" : "build",
+          "ENABLE_PREVIEWS" : "NO",
+          "ENABLE_XOJIT_PREVIEWS" : "YES",
+          "ONLY_ACTIVE_ARCH" : "YES"
+        }
+      }
+    }
+  },
+  "schemeCommand" : "launch",
+  "showNonLoggedProgress" : true,
+  "useDryRun" : false,
+  "useImplicitDependencies" : true,
+  "useLegacyBuildLocations" : false,
+  "useParallelTargets" : true
+}

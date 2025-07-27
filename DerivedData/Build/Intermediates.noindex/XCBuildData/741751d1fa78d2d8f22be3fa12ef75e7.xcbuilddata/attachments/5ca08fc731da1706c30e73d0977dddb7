@@ -1,0 +1,48 @@
+{
+  "" : {
+    "diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/TimerKit-master.dia",
+    "emit-module-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/TimerKit-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/TimerKit-master-emit-module.dia",
+    "swift-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/TimerKit-master.swiftdeps"
+  },
+  "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/DerivedSources/resource_bundle_accessor.swift" : {
+    "const-values" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/resource_bundle_accessor.swiftconstvalues",
+    "dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/resource_bundle_accessor.d",
+    "diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/resource_bundle_accessor.dia",
+    "index-unit-output-path" : "/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/resource_bundle_accessor.o",
+    "llvm-bc" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/resource_bundle_accessor.bc",
+    "object" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/resource_bundle_accessor.o",
+    "swift-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/resource_bundle_accessor.swiftdeps",
+    "swiftmodule" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/resource_bundle_accessor~partial.swiftmodule"
+  },
+  "/Users/acousland/Documents/Code/MacEaves/TutorialResources/TimerKit/Sources/TimerKit/Models/AVPlayer+Ding.swift" : {
+    "const-values" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/AVPlayer+Ding.swiftconstvalues",
+    "dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/AVPlayer+Ding.d",
+    "diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/AVPlayer+Ding.dia",
+    "index-unit-output-path" : "/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/AVPlayer+Ding.o",
+    "llvm-bc" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/AVPlayer+Ding.bc",
+    "object" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/AVPlayer+Ding.o",
+    "swift-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/AVPlayer+Ding.swiftdeps",
+    "swiftmodule" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/AVPlayer+Ding~partial.swiftmodule"
+  },
+  "/Users/acousland/Documents/Code/MacEaves/TutorialResources/TimerKit/Sources/TimerKit/Models/ScrumTimer.swift" : {
+    "const-values" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/ScrumTimer.swiftconstvalues",
+    "dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/ScrumTimer.d",
+    "diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/ScrumTimer.dia",
+    "index-unit-output-path" : "/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/ScrumTimer.o",
+    "llvm-bc" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/ScrumTimer.bc",
+    "object" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/ScrumTimer.o",
+    "swift-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/ScrumTimer.swiftdeps",
+    "swiftmodule" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/ScrumTimer~partial.swiftmodule"
+  },
+  "/Users/acousland/Documents/Code/MacEaves/TutorialResources/TimerKit/Sources/TimerKit/Views/ScrumProgressViewStyle.swift" : {
+    "const-values" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/ScrumProgressViewStyle.swiftconstvalues",
+    "dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/ScrumProgressViewStyle.d",
+    "diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/ScrumProgressViewStyle.dia",
+    "index-unit-output-path" : "/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/ScrumProgressViewStyle.o",
+    "llvm-bc" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/ScrumProgressViewStyle.bc",
+    "object" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/ScrumProgressViewStyle.o",
+    "swift-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/ScrumProgressViewStyle.swiftdeps",
+    "swiftmodule" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/TimerKit.build/Debug/TimerKit.build/Objects-normal/arm64/ScrumProgressViewStyle~partial.swiftmodule"
+  }
+}

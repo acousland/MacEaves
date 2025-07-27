@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Debug Transcription App",
+			"type": "shell",
+			"command": "xcodebuild -project MacEaves.xcodeproj -scheme MacEaves -derivedDataPath ./DerivedData build && open DerivedData/Build/Products/Debug/MacEaves.app",
+			"group": "test",
+			"isBackground": false,
+			"problemMatcher": [
+				"$gcc"
+			]
+		}
+	]
+}

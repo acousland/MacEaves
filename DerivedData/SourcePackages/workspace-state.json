@@ -1,0 +1,55 @@
+{
+  "object" : {
+    "artifacts" : [
+
+    ],
+    "dependencies" : [
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "themekit",
+          "kind" : "fileSystem",
+          "location" : "/Users/acousland/Documents/Code/MacEaves/TutorialResources/ThemeKit",
+          "name" : "ThemeKit"
+        },
+        "state" : {
+          "name" : "fileSystem",
+          "path" : "/Users/acousland/Documents/Code/MacEaves/TutorialResources/ThemeKit"
+        },
+        "subpath" : "themekit"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "timerkit",
+          "kind" : "fileSystem",
+          "location" : "/Users/acousland/Documents/Code/MacEaves/TutorialResources/TimerKit",
+          "name" : "TimerKit"
+        },
+        "state" : {
+          "name" : "fileSystem",
+          "path" : "/Users/acousland/Documents/Code/MacEaves/TutorialResources/TimerKit"
+        },
+        "subpath" : "timerkit"
+      },
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "transcriptionkit",
+          "kind" : "fileSystem",
+          "location" : "/Users/acousland/Documents/Code/MacEaves/TutorialResources/TranscriptionKit",
+          "name" : "TranscriptionKit"
+        },
+        "state" : {
+          "name" : "fileSystem",
+          "path" : "/Users/acousland/Documents/Code/MacEaves/TutorialResources/TranscriptionKit"
+        },
+        "subpath" : "transcriptionkit"
+      }
+    ],
+    "prebuilts" : [
+
+    ]
+  },
+  "version" : 7
+}

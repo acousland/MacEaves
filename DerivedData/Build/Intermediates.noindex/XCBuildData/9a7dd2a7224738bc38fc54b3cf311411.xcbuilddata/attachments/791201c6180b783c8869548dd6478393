@@ -1,0 +1,4 @@
+module TranscriptionKit {
+header "TranscriptionKit-Swift.h"
+export *
+}

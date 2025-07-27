@@ -1,0 +1,38 @@
+{
+  "" : {
+    "diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/ThemeKit-master.dia",
+    "emit-module-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/ThemeKit-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/ThemeKit-master-emit-module.dia",
+    "swift-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/ThemeKit-master.swiftdeps"
+  },
+  "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  },
+  "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/DerivedSources/resource_bundle_accessor.swift" : {
+    "const-values" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/resource_bundle_accessor.swiftconstvalues",
+    "dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/resource_bundle_accessor.d",
+    "diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/resource_bundle_accessor.dia",
+    "index-unit-output-path" : "/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/resource_bundle_accessor.o",
+    "llvm-bc" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/resource_bundle_accessor.bc",
+    "object" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/resource_bundle_accessor.o",
+    "swift-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/resource_bundle_accessor.swiftdeps",
+    "swiftmodule" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/resource_bundle_accessor~partial.swiftmodule"
+  },
+  "/Users/acousland/Documents/Code/MacEaves/TutorialResources/ThemeKit/Sources/ThemeKit/Models/Theme.swift" : {
+    "const-values" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/Theme.swiftconstvalues",
+    "dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/Theme.d",
+    "diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/Theme.dia",
+    "index-unit-output-path" : "/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/Theme.o",
+    "llvm-bc" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/Theme.bc",
+    "object" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/Theme.o",
+    "swift-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/Theme.swiftdeps",
+    "swiftmodule" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/ThemeKit.build/Debug/ThemeKit.build/Objects-normal/arm64/Theme~partial.swiftmodule"
+  }
+}

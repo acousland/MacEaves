@@ -71,8 +71,10 @@ import Foundation
     
     /// Start the timer.
     public func startScrum() {
-        timer = Timer.scheduledTimer(withTimeInterval: frequency, repeats: true) { [weak self] timer in
-            self?.update()
+        timer = Timer.scheduledTimer(withTimeInterval: frequency, repeats: true) { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.update()
+            }
         }
         timer?.tolerance = 0.1
         changeToSpeaker(at: 0)
@@ -85,10 +87,8 @@ import Foundation
     }
     
     /// Advance the timer to the next speaker.
-    nonisolated public func skipSpeaker() {
-        Task { @MainActor in
-            changeToSpeaker(at: speakerIndex + 1)
-        }
+    public func skipSpeaker() {
+        changeToSpeaker(at: speakerIndex + 1)
     }
 
     /**
@@ -120,23 +120,20 @@ import Foundation
         startDate = Date()
     }
 
-    nonisolated private func update() {
+    private func update() {
+        guard let startDate,
+              !timerStopped else { return }
+        let secondsElapsed = Int(Date().timeIntervalSince1970 - startDate.timeIntervalSince1970)
+        secondsElapsedForSpeaker = secondsElapsed
+        self.secondsElapsed = secondsPerSpeaker * speakerIndex + secondsElapsedForSpeaker
+        guard secondsElapsed <= secondsPerSpeaker else {
+            return
+        }
+        secondsRemaining = max(lengthInSeconds - self.secondsElapsed, 0)
 
-        Task { @MainActor in
-            guard let startDate,
-                  !timerStopped else { return }
-            let secondsElapsed = Int(Date().timeIntervalSince1970 - startDate.timeIntervalSince1970)
-            secondsElapsedForSpeaker = secondsElapsed
-            self.secondsElapsed = secondsPerSpeaker * speakerIndex + secondsElapsedForSpeaker
-            guard secondsElapsed <= secondsPerSpeaker else {
-                return
-            }
-            secondsRemaining = max(lengthInSeconds - self.secondsElapsed, 0)
-
-            if secondsElapsedForSpeaker >= secondsPerSpeaker {
-                changeToSpeaker(at: speakerIndex + 1)
-                speakerChangedAction?()
-            }
+        if secondsElapsedForSpeaker >= secondsPerSpeaker {
+            changeToSpeaker(at: speakerIndex + 1)
+            speakerChangedAction?()
         }
     }
 

@@ -1,0 +1,78 @@
+{
+  "" : {
+    "diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/MacEaves-master.dia",
+    "emit-module-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/MacEaves-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/MacEaves-master-emit-module.dia",
+    "swift-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/MacEaves-master.swiftdeps"
+  },
+  "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  },
+  "/Users/acousland/Documents/Code/MacEaves/MacEaves/DebugTranscriptionApp.swift" : {
+    "const-values" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/DebugTranscriptionApp.swiftconstvalues",
+    "dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/DebugTranscriptionApp.d",
+    "diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/DebugTranscriptionApp.dia",
+    "index-unit-output-path" : "/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/DebugTranscriptionApp.o",
+    "llvm-bc" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/DebugTranscriptionApp.bc",
+    "object" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/DebugTranscriptionApp.o",
+    "swift-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/DebugTranscriptionApp.swiftdeps",
+    "swiftmodule" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/DebugTranscriptionApp~partial.swiftmodule"
+  },
+  "/Users/acousland/Documents/Code/MacEaves/MacEaves/MacEavesApp.swift" : {
+    "const-values" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/MacEavesApp.swiftconstvalues",
+    "dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/MacEavesApp.d",
+    "diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/MacEavesApp.dia",
+    "index-unit-output-path" : "/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/MacEavesApp.o",
+    "llvm-bc" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/MacEavesApp.bc",
+    "object" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/MacEavesApp.o",
+    "swift-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/MacEavesApp.swiftdeps",
+    "swiftmodule" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/MacEavesApp~partial.swiftmodule"
+  },
+  "/Users/acousland/Documents/Code/MacEaves/MacEaves/Models/ErrorWrapper.swift" : {
+    "const-values" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/ErrorWrapper.swiftconstvalues",
+    "dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/ErrorWrapper.d",
+    "diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/ErrorWrapper.dia",
+    "index-unit-output-path" : "/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/ErrorWrapper.o",
+    "llvm-bc" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/ErrorWrapper.bc",
+    "object" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/ErrorWrapper.o",
+    "swift-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/ErrorWrapper.swiftdeps",
+    "swiftmodule" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/ErrorWrapper~partial.swiftmodule"
+  },
+  "/Users/acousland/Documents/Code/MacEaves/MacEaves/Tests/TranscriptionTests.swift" : {
+    "const-values" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/TranscriptionTests.swiftconstvalues",
+    "dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/TranscriptionTests.d",
+    "diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/TranscriptionTests.dia",
+    "index-unit-output-path" : "/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/TranscriptionTests.o",
+    "llvm-bc" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/TranscriptionTests.bc",
+    "object" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/TranscriptionTests.o",
+    "swift-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/TranscriptionTests.swiftdeps",
+    "swiftmodule" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/TranscriptionTests~partial.swiftmodule"
+  },
+  "/Users/acousland/Documents/Code/MacEaves/MacEaves/Views/SafeTranscriptionView.swift" : {
+    "const-values" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/SafeTranscriptionView.swiftconstvalues",
+    "dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/SafeTranscriptionView.d",
+    "diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/SafeTranscriptionView.dia",
+    "index-unit-output-path" : "/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/SafeTranscriptionView.o",
+    "llvm-bc" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/SafeTranscriptionView.bc",
+    "object" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/SafeTranscriptionView.o",
+    "swift-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/SafeTranscriptionView.swiftdeps",
+    "swiftmodule" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/SafeTranscriptionView~partial.swiftmodule"
+  },
+  "/Users/acousland/Documents/Code/MacEaves/MacEaves/Views/SimpleTranscriptionView.swift" : {
+    "const-values" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/SimpleTranscriptionView.swiftconstvalues",
+    "dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/SimpleTranscriptionView.d",
+    "diagnostics" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/SimpleTranscriptionView.dia",
+    "index-unit-output-path" : "/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/SimpleTranscriptionView.o",
+    "llvm-bc" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/SimpleTranscriptionView.bc",
+    "object" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/SimpleTranscriptionView.o",
+    "swift-dependencies" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/SimpleTranscriptionView.swiftdeps",
+    "swiftmodule" : "/Users/acousland/Documents/Code/MacEaves/DerivedData/Build/Intermediates.noindex/MacEaves.build/Debug/MacEaves.build/Objects-normal/arm64/SimpleTranscriptionView~partial.swiftmodule"
+  }
+}

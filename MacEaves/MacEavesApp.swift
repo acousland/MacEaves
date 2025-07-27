@@ -1,17 +1,12 @@
-/*
- See LICENSE folder for this sample’s licensing information.
- */
-
 import SwiftUI
-import SwiftData
+import TranscriptionKit
 
 @main
 struct MacEavesApp: App {
-
     var body: some Scene {
         WindowGroup {
-            ScrumsView()
+            SimpleTranscriptionView()
         }
-        .modelContainer(for: DailyScrum.self)
+        .windowResizability(.contentSize)
     }
 }

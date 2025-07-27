@@ -72,7 +72,10 @@ import CoreAudio
     public init() {
         recognizer = SFSpeechRecognizer()
         guard recognizer != nil else {
-            transcribe(RecognizerError.nilRecognizer)
+            var errorMessage = ""
+            let error = RecognizerError.nilRecognizer
+            errorMessage += error.message
+            transcript = "<< \(errorMessage) >>"
             return
         }
         
@@ -85,9 +88,19 @@ import CoreAudio
                     throw RecognizerError.notPermittedToRecord
                 }
                 
-                discoverAudioDevices()
+                await MainActor.run {
+                    discoverAudioDevices()
+                }
             } catch {
-                transcribe(error)
+                await MainActor.run {
+                    var errorMessage = ""
+                    if let error = error as? RecognizerError {
+                        errorMessage += error.message
+                    } else {
+                        errorMessage += error.localizedDescription
+                    }
+                    transcript = "<< \(errorMessage) >>"
+                }
             }
         }
     }
@@ -126,7 +139,10 @@ import CoreAudio
      */
     private func transcribe() {
         guard let recognizer, recognizer.isAvailable else {
-            self.transcribe(RecognizerError.recognizerIsUnavailable)
+            var errorMessage = ""
+            let error = RecognizerError.recognizerIsUnavailable
+            errorMessage += error.message
+            transcript = "<< \(errorMessage) >>"
             return
         }
         
@@ -139,30 +155,39 @@ import CoreAudio
             })
         } catch {
             self.reset()
-            self.transcribe(error)
+            var errorMessage = ""
+            if let error = error as? RecognizerError {
+                errorMessage += error.message
+            } else {
+                errorMessage += error.localizedDescription
+            }
+            transcript = "<< \(errorMessage) >>"
         }
     }
     
     /// Reset the speech recognizer.
     private func reset() {
         task?.cancel()
-        audioEngine?.stop()
+        if let audioEngine = audioEngine {
+            audioEngine.stop()
+            audioEngine.inputNode.removeTap(onBus: 0)
+        }
         audioEngine = nil
         request = nil
         task = nil
     }
     
-    private func prepareEngine() throws -> (AVAudioEngine, SFSpeechAudioBufferRecognitionRequest) {
+    nonisolated private func prepareEngine() throws -> (AVAudioEngine, SFSpeechAudioBufferRecognitionRequest) {
         let audioEngine = AVAudioEngine()
         
         let request = SFSpeechAudioBufferRecognitionRequest()
         request.shouldReportPartialResults = true
         
-        // Configure audio engine based on selected device and transcription mode
-        try configureAudioEngine(audioEngine)
-        
+        // Configure audio engine with default settings - no audio session needed on macOS
         let recordingFormat = audioEngine.inputNode.outputFormat(forBus: 0)
-        audioEngine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer: AVAudioPCMBuffer, when: AVAudioTime) in
+        audioEngine.inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { @Sendable (buffer: AVAudioPCMBuffer, when: AVAudioTime) in
+            // Audio buffer callback - this runs on audio thread, just append buffer
+            // This is thread-safe and doesn't require main actor isolation
             request.append(buffer)
         }
         
@@ -172,68 +197,32 @@ import CoreAudio
         return (audioEngine, request)
     }
     
-    private func configureAudioEngine(_ audioEngine: AVAudioEngine) throws {
-        // Get current device selections
-        let selectedInput = selectedInputDevice
-        let selectedOutput = selectedOutputDevice
-        let transcribingFromOutput = isTranscribingFromOutput
-        
-        if transcribingFromOutput, let outputDevice = selectedOutput {
-            // Configure for output transcription (listening to system audio)
-            try configureForOutputTranscription(audioEngine, outputDevice: outputDevice)
-        } else if let inputDevice = selectedInput {
-            // Configure for specific input device
-            try configureForInputDevice(audioEngine, inputDevice: inputDevice)
-        }
-        // If no device selected, use default device (system will handle)
-    }
-    
-    private func configureForInputDevice(_ audioEngine: AVAudioEngine, inputDevice: AudioDevice) throws {
-        // Set the preferred input device
-        // Note: On macOS, you typically need to set this at the system level
-        // For now, we'll work with the default device
-        // Advanced implementation would use AudioUnit or CoreAudio to select specific devices
-    }
-    
-    private func configureForOutputTranscription(_ audioEngine: AVAudioEngine, outputDevice: AudioDevice) throws {
-        // For output transcription, we need to tap into the system's audio output
-        // This is complex and may require additional permissions
-        // For now, we'll note this limitation
-        throw RecognizerError.audioDeviceError
-    }
-    
-    private func recognitionHandler(audioEngine: AVAudioEngine, result: SFSpeechRecognitionResult?, error: Error?) {
+    private nonisolated func recognitionHandler(audioEngine: AVAudioEngine, result: SFSpeechRecognitionResult?, error: Error?) {
         let receivedFinalResult = result?.isFinal ?? false
         let receivedError = error != nil
         
         if receivedFinalResult || receivedError {
+            // Ensure audio engine operations happen safely
             audioEngine.stop()
             audioEngine.inputNode.removeTap(onBus: 0)
         }
         
         if let result {
-            Task { @MainActor in
-                transcribe(result.bestTranscription.formattedString)
+            let transcriptionText = result.bestTranscription.formattedString
+            DispatchQueue.main.async { [weak self] in
+                self?.transcript = transcriptionText
             }
         } else if let error {
-            Task { @MainActor in
-                transcribe(error)
+            var errorMessage = ""
+            if let error = error as? RecognizerError {
+                errorMessage += error.message
+            } else {
+                errorMessage += error.localizedDescription
+            }
+            DispatchQueue.main.async { [weak self] in
+                self?.transcript = "<< \(errorMessage) >>"
             }
         }
-    }
-    
-    
-    private func transcribe(_ message: String) {
-        transcript = message
-    }
-    private func transcribe(_ error: Error) {
-        var errorMessage = ""
-        if let error = error as? RecognizerError {
-            errorMessage += error.message
-        } else {
-            errorMessage += error.localizedDescription
-        }
-        transcript = "<< \(errorMessage) >>"
     }
     
     /// Discover available audio devices
