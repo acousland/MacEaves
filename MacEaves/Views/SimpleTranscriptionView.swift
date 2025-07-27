@@ -13,6 +13,7 @@ struct SimpleTranscriptionView: View {
     @State private var errorWrapper: ErrorWrapper?
     @State private var isMonitoringOutput = false
     @State private var lastSummarizedLength = 0
+    @State private var lastActionItemsLength = 0
     
     var body: some View {
         VStack(spacing: 20) {
@@ -212,7 +213,7 @@ struct SimpleTranscriptionView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding()
                         }
-                        .frame(width: 400, height: 120)
+                        .frame(width: 400, height: 100)
                         .background(Color.gray.opacity(0.1))
                         .cornerRadius(8)
                     }
@@ -220,7 +221,7 @@ struct SimpleTranscriptionView: View {
                     // Summary Box
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
-                            Text("AI Analysis")
+                            Text("AI Summary")
                                 .font(.caption)
                                 .fontWeight(.medium)
                                 .foregroundColor(.secondary)
@@ -239,13 +240,13 @@ struct SimpleTranscriptionView: View {
                                     } else {
                                         Image(systemName: "chart.bar.doc.horizontal")
                                     }
-                                    Text("Analyse")
+                                    Text("Summarize")
                                 }
                                 .font(.caption)
                                 .foregroundColor(.white)
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 6)
-                                .background(speechRecognizer.transcript.isEmpty ? Color.gray : Color.green)
+                                .background(speechRecognizer.transcript.isEmpty ? Color.gray : Color.blue)
                                 .cornerRadius(6)
                             }
                             .buttonStyle(PlainButtonStyle())
@@ -259,18 +260,75 @@ struct SimpleTranscriptionView: View {
                         }
                         
                         ScrollView {
-                            Text(openAIService.summary.isEmpty ? "Click 'Analyse' to generate an AI analysis..." : openAIService.summary)
+                            Text(openAIService.summary.isEmpty ? "Click 'Summarize' to generate an AI summary..." : openAIService.summary)
                                 .font(.body)
                                 .foregroundColor(openAIService.summary.isEmpty ? .secondary : .primary)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding()
                         }
-                        .frame(width: 400, height: 100)
+                        .frame(width: 400, height: 80)
                         .background(Color.blue.opacity(0.05))
                         .cornerRadius(8)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
                                 .stroke(Color.blue.opacity(0.2), lineWidth: 1)
+                        )
+                    }
+                    
+                    // Action Items Box
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text("Action Items")
+                                .font(.caption)
+                                .fontWeight(.medium)
+                                .foregroundColor(.secondary)
+                            
+                            Spacer()
+                            
+                            Button(action: {
+                                Task {
+                                    await generateActionItems()
+                                }
+                            }) {
+                                HStack(spacing: 4) {
+                                    if openAIService.isGeneratingActionItems {
+                                        ProgressView()
+                                            .scaleEffect(0.7)
+                                    } else {
+                                        Image(systemName: "checklist")
+                                    }
+                                    Text("Extract")
+                                }
+                                .font(.caption)
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(speechRecognizer.transcript.isEmpty ? Color.gray : Color.green)
+                                .cornerRadius(6)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .disabled(openAIService.isGeneratingActionItems || speechRecognizer.transcript.isEmpty)
+                            
+                            if let error = openAIService.lastActionItemsError {
+                                Text("⚠️")
+                                    .foregroundColor(.orange)
+                                    .help("Error: \(error)")
+                            }
+                        }
+                        
+                        ScrollView {
+                            Text(openAIService.actionItems.isEmpty ? "Click 'Extract' to find action items..." : openAIService.actionItems)
+                                .font(.body)
+                                .foregroundColor(openAIService.actionItems.isEmpty ? .secondary : .primary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding()
+                        }
+                        .frame(width: 400, height: 80)
+                        .background(Color.green.opacity(0.05))
+                        .cornerRadius(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.green.opacity(0.2), lineWidth: 1)
                         )
                     }
                 }
@@ -279,6 +337,13 @@ struct SimpleTranscriptionView: View {
                     if newTranscript.count > lastSummarizedLength + 500 {
                         Task {
                             await generateSummary()
+                        }
+                    }
+                    
+                    // Auto-extract action items when transcript grows significantly
+                    if newTranscript.count > lastActionItemsLength + 500 {
+                        Task {
+                            await generateActionItems()
                         }
                     }
                 }
@@ -338,6 +403,32 @@ struct SimpleTranscriptionView: View {
             print("✅ Summary generation completed successfully")
         } catch {
             let errorMessage = "Error generating summary: \(error)"
+            print("❌ \(errorMessage)")
+            
+            // Also update the error wrapper for user display
+            errorWrapper = ErrorWrapper(error: error, guidance: "Please check your internet connection and API key configuration.")
+        }
+    }
+    
+    @MainActor
+    private func generateActionItems() async {
+        print("📋 Debug: generateActionItems() called")
+        print("📝 Current transcript: '\(speechRecognizer.transcript)'")
+        print("📏 Transcript length: \(speechRecognizer.transcript.count)")
+        
+        guard !speechRecognizer.transcript.isEmpty else { 
+            print("⚠️ Warning: Transcript is empty, skipping action items generation")
+            return 
+        }
+        
+        print("🚀 Starting OpenAI action items generation...")
+        
+        do {
+            try await openAIService.generateActionItems(from: speechRecognizer.transcript)
+            lastActionItemsLength = speechRecognizer.transcript.count
+            print("✅ Action items generation completed successfully")
+        } catch {
+            let errorMessage = "Error generating action items: \(error)"
             print("❌ \(errorMessage)")
             
             // Also update the error wrapper for user display
