@@ -148,20 +148,22 @@ struct VUMeterBar: View {
                     .offset(y: -peakOffset)
             }
             
-            Text("\(Int(level)) dB")
+            Text("\(String(format: "%.1f", level)) dB")
                 .font(.caption2)
                 .monospacedDigit()
         }
     }
     
     private var levelHeight: CGFloat {
-        let normalizedLevel = max(-60, min(0, level))
-        return meterHeight * CGFloat((normalizedLevel + 60) / 60)
+        // Level is already in dB (-60 to 0), convert to height
+        let clampedLevel = max(-60, min(0, level))
+        return meterHeight * CGFloat((clampedLevel + 60) / 60)
     }
     
     private var peakOffset: CGFloat {
-        let normalizedPeak = max(-60, min(0, peak))
-        return meterHeight * CGFloat((60 - (normalizedPeak + 60)) / 60)
+        // Peak is already in dB (-60 to 0), convert to offset from top
+        let clampedPeak = max(-60, min(0, peak))
+        return meterHeight * CGFloat((60 - (clampedPeak + 60)) / 60)
     }
     
     private var levelGradient: LinearGradient {

@@ -106,15 +106,21 @@ import CoreAudio
     }
     
     public func startTranscribing() {
-        transcribe()
+        Task {
+            await transcribe()
+        }
     }
 
     public func resetTranscript() {
-        reset()
+        Task { @MainActor in
+            reset()
+        }
     }
 
     public func stopTranscribing() {
-        reset()
+        Task { @MainActor in
+            reset()
+        }
     }
 
     public func selectInputDevice(_ device: AudioDevice?) {
@@ -137,7 +143,7 @@ import CoreAudio
      Creates a `SFSpeechRecognitionTask` that transcribes speech to text until you call `stopTranscribing()`.
      The resulting transcription is continuously written to the published `transcript` property.
      */
-    private func transcribe() {
+    private func transcribe() async {
         guard let recognizer, recognizer.isAvailable else {
             var errorMessage = ""
             let error = RecognizerError.recognizerIsUnavailable
@@ -147,14 +153,19 @@ import CoreAudio
         }
         
         do {
-            let (audioEngine, request) = try prepareEngine()
+            // Ensure audio engine operations happen on main thread
+            let (audioEngine, request) = try await Task { @MainActor in
+                return try prepareEngine()
+            }.value
             self.audioEngine = audioEngine
             self.request = request
             self.task = recognizer.recognitionTask(with: request, resultHandler: { [weak self] result, error in
                 self?.recognitionHandler(audioEngine: audioEngine, result: result, error: error)
             })
         } catch {
-            self.reset()
+            Task { @MainActor in
+                self.reset()
+            }
             var errorMessage = ""
             if let error = error as? RecognizerError {
                 errorMessage += error.message
@@ -166,6 +177,7 @@ import CoreAudio
     }
     
     /// Reset the speech recognizer.
+    @MainActor
     private func reset() {
         task?.cancel()
         if let audioEngine = audioEngine {
@@ -177,7 +189,7 @@ import CoreAudio
         task = nil
     }
     
-    nonisolated private func prepareEngine() throws -> (AVAudioEngine, SFSpeechAudioBufferRecognitionRequest) {
+    @MainActor private func prepareEngine() throws -> (AVAudioEngine, SFSpeechAudioBufferRecognitionRequest) {
         let audioEngine = AVAudioEngine()
         
         let request = SFSpeechAudioBufferRecognitionRequest()
@@ -202,9 +214,12 @@ import CoreAudio
         let receivedError = error != nil
         
         if receivedFinalResult || receivedError {
-            // Ensure audio engine operations happen safely
-            audioEngine.stop()
-            audioEngine.inputNode.removeTap(onBus: 0)
+            // CRITICAL FIX: Move audio engine operations to main thread to prevent threading violations
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
+                audioEngine.stop()
+                audioEngine.inputNode.removeTap(onBus: 0)
+            }
         }
         
         if let result {
