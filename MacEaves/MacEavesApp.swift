@@ -15,7 +15,13 @@ struct MacEavesApp: App {
                 VUMeterView()
                     .tabItem {
                         Image(systemName: "chart.bar")
-                        Text("Audio Monitor")
+                        Text("Single Device")
+                    }
+                
+                MultiDeviceVUMeterView()
+                    .tabItem {
+                        Image(systemName: "chart.bar.fill")
+                        Text("All Devices")
                     }
             }
         }
