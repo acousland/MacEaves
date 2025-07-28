@@ -67,7 +67,6 @@ struct MainContentView: View {
                 }
             }
             .navigationTitle(selectedTool.rawValue)
-            .navigationBarTitleDisplayMode(.large)
         }
         .navigationSplitViewStyle(.balanced)
     }
