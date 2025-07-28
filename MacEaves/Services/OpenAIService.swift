@@ -49,7 +49,7 @@ class OpenAIService: ObservableObject {
     
     private var apiKey: String?
     private var baseURL: String = "https://api.openai.com/v1"
-    private var model: String = "gpt-3.5-turbo"
+    private var model: String = "gpt-4o-mini"
     
     init() {
         loadConfiguration()
@@ -80,7 +80,7 @@ class OpenAIService: ObservableObject {
         
         self.apiKey = openAIConfig["APIKey"] as? String
         self.baseURL = openAIConfig["BaseURL"] as? String ?? "https://api.openai.com/v1"
-        self.model = openAIConfig["Model"] as? String ?? "gpt-3.5-turbo"
+        self.model = openAIConfig["Model"] as? String ?? "gpt-4o-mini"
         
         if let apiKey = self.apiKey, !apiKey.isEmpty {
             print("✅ OpenAI API key loaded (length: \(apiKey.count))")
