@@ -3,7 +3,10 @@
  Provides text summarization using OpenAI's API
  */
 
+// NOTE: All uses of self or class properties in nonisolated(nonsending) functions must be performed on MainActor for data-race safety.
+
 import Foundation
+import Observation
 
 enum OpenAIError: Error, LocalizedError {
     case invalidConfiguration
@@ -37,21 +40,22 @@ enum OpenAIError: Error, LocalizedError {
     }
 }
 
+/// All @Published properties must only be accessed on the MainActor to ensure thread safety.
 @MainActor
-class OpenAIService: ObservableObject {
-    @Published var summary: String = ""
-    @Published var isGeneratingSummary: Bool = false
-    @Published var lastError: String?
+public class OpenAIService: ObservableObject {
+    @Published public var summary: String = ""
+    @Published public var isGeneratingSummary: Bool = false
+    @Published public var lastError: String?
     
-    @Published var actionItems: String = ""
-    @Published var isGeneratingActionItems: Bool = false
-    @Published var lastActionItemsError: String?
+    @Published public var actionItems: String = ""
+    @Published public var isGeneratingActionItems: Bool = false
+    @Published public var lastActionItemsError: String?
     
     private var apiKey: String?
     private var baseURL: String = "https://api.openai.com/v1"
     private var model: String = "gpt-4o-mini"
     
-    init() {
+    public init() {
         loadConfiguration()
     }
     
@@ -91,56 +95,51 @@ class OpenAIService: ObservableObject {
         }
     }
     
-    func generateActionItems(from transcript: String) async throws {
+    /// Generates action items from a transcript.
+    /// Note: All access to self and its properties is done on MainActor to ensure data race safety and comply with the Sendable model.
+    public func generateActionItems(from transcript: String) async throws {
         print("📋 Debug: Starting action items generation...")
         print("📝 Transcript length: \(transcript.count) characters")
         
-        guard let apiKey = apiKey, !apiKey.isEmpty else {
+        let apiKey = self.apiKey
+        if apiKey == nil || apiKey!.isEmpty {
             let error = "OpenAI API key not configured"
             print("❌ Error: \(error)")
-            await MainActor.run {
-                self.lastActionItemsError = error
-            }
+            self.lastActionItemsError = error
             throw OpenAIError.invalidConfiguration
         }
+        print("🔑 API key available (length: \(apiKey!.count))")
         
-        print("🔑 API key available (length: \(apiKey.count))")
-        
-        guard !transcript.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+        if transcript.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             print("⚠️ Warning: Empty transcript provided")
-            await MainActor.run {
-                self.actionItems = "No content to analyze for action items yet..."
-            }
+            self.actionItems = "No content to analyze for action items yet..."
             return
         }
 
-        await MainActor.run {
-            self.isGeneratingActionItems = true
-            self.lastActionItemsError = nil
-        }
+        self.isGeneratingActionItems = true
+        self.lastActionItemsError = nil
         
         print("📤 Making API request for action items...")
 
         do {
-            let actionItems = try await requestActionItems(transcript: transcript, apiKey: apiKey)
+            let actionItems = try await requestActionItems(transcript: transcript, apiKey: apiKey!)
             print("✅ Action items generated successfully (length: \(actionItems.count) characters)")
-            await MainActor.run {
-                self.actionItems = actionItems
-                self.isGeneratingActionItems = false
-            }
+            self.actionItems = actionItems
+            self.isGeneratingActionItems = false
         } catch {
             let errorMessage = "Failed to generate action items: \(error.localizedDescription)"
             print("❌ API Error: \(errorMessage)")
             print("🔍 Error details: \(error)")
-            await MainActor.run {
-                self.lastActionItemsError = errorMessage
-                self.isGeneratingActionItems = false
-            }
+            self.lastActionItemsError = errorMessage
+            self.isGeneratingActionItems = false
             throw error
         }
     }
     
+    /// Requests action items from OpenAI API.
+    /// Note: Accesses to self's properties are done on MainActor for thread safety and Sendable compliance.
     private func requestActionItems(transcript: String, apiKey: String) async throws -> String {
+        let (baseURL, model) = (self.baseURL, self.model)
         let urlString = "\(baseURL)/chat/completions"
         print("🌐 API URL: \(urlString)")
         
@@ -160,7 +159,7 @@ class OpenAIService: ObservableObject {
                 "content": "You are a helpful assistant that extracts action items from conversations. Focus specifically on commitments, tasks, and follow-ups where people say they will do something. Look for phrases like 'I will...', 'I'll...', 'I need to...', 'I should...', 'Let me...', or similar commitments. Format as a clear bulleted list with who is doing what."
             ],
             [
-                "role": "user", 
+                "role": "user",
                 "content": "Please extract all action items and commitments from the following transcript, focusing on what people said they would do:\n\n\(transcript)"
             ]
         ]
@@ -235,56 +234,52 @@ class OpenAIService: ObservableObject {
         }
     }
 
-    func generateSummary(from transcript: String) async throws {
+    /// Generates a summary from a transcript.
+    /// Note: All access to self and its properties is done on MainActor to ensure data race safety and comply with the Sendable model.
+    public func generateSummary(from transcript: String) async throws {
         print("🚀 Debug: Starting summary generation...")
         print("📝 Transcript length: \(transcript.count) characters")
         
-        guard let apiKey = apiKey, !apiKey.isEmpty else {
+        let apiKey = self.apiKey
+        if apiKey == nil || apiKey!.isEmpty {
             let error = "OpenAI API key not configured"
             print("❌ Error: \(error)")
-            await MainActor.run {
-                self.lastError = error
-            }
+            self.lastError = error
             throw OpenAIError.invalidConfiguration
         }
         
-        print("🔑 API key available (length: \(apiKey.count))")
+        print("🔑 API key available (length: \(apiKey!.count))")
         
-        guard !transcript.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+        if transcript.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             print("⚠️ Warning: Empty transcript provided")
-            await MainActor.run {
-                self.summary = "No content to summarize yet..."
-            }
+            self.summary = "No content to summarize yet..."
             return
         }
 
-        await MainActor.run {
-            self.isGeneratingSummary = true
-            self.lastError = nil
-        }
+        self.isGeneratingSummary = true
+        self.lastError = nil
         
         print("📤 Making API request...")
 
         do {
-            let summary = try await requestSummary(transcript: transcript, apiKey: apiKey)
+            let summary = try await requestSummary(transcript: transcript, apiKey: apiKey!)
             print("✅ Summary generated successfully (length: \(summary.count) characters)")
-            await MainActor.run {
-                self.summary = summary
-                self.isGeneratingSummary = false
-            }
+            self.summary = summary
+            self.isGeneratingSummary = false
         } catch {
             let errorMessage = "Failed to generate summary: \(error.localizedDescription)"
             print("❌ API Error: \(errorMessage)")
             print("🔍 Error details: \(error)")
-            await MainActor.run {
-                self.lastError = errorMessage
-                self.isGeneratingSummary = false
-            }
+            self.lastError = errorMessage
+            self.isGeneratingSummary = false
             throw error
         }
     }
     
+    /// Requests summary from OpenAI API.
+    /// Note: Accesses to self's properties are done on MainActor for thread safety and Sendable compliance.
     private func requestSummary(transcript: String, apiKey: String) async throws -> String {
+        let (baseURL, model) = (self.baseURL, self.model)
         let urlString = "\(baseURL)/chat/completions"
         print("🌐 API URL: \(urlString)")
         
@@ -304,7 +299,7 @@ class OpenAIService: ObservableObject {
                 "content": "You are a helpful assistant that creates concise summaries. Focus on key points, decisions, and action items. Keep summaries clear and well-organized."
             ],
             [
-                "role": "user", 
+                "role": "user",
                 "content": "Please provide a concise summary of the following transcript:\n\n\(transcript)"
             ]
         ]
@@ -380,3 +375,4 @@ class OpenAIService: ObservableObject {
         }
     }
 }
+

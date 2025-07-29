@@ -2,11 +2,16 @@
  See LICENSE folder for this sample’s licensing information.
  */
 
+// NOTE: All uses of self or class properties in closures, async contexts, or nonisolated settings must be performed on MainActor for data-race safety.
+
 import Foundation
 import AVFoundation
 import Speech
 import Observation
 import CoreAudio
+import Combine
+
+public typealias AudioDeviceID = UInt32
 
 /// Audio device information for interface picker
 public struct AudioDevice: Identifiable, Hashable {
@@ -23,18 +28,11 @@ public struct AudioDevice: Identifiable, Hashable {
     }
 }
 
-/// A helper for transcribing speech to text using SFSpeechRecognizer and AVAudioEngine.
-import AVFoundation
-import Foundation
-import Speech
-import SwiftUI
-import CoreAudio
-
 /**
  * A helper for transcribing speech to text using SFSpeechRecognizer and AVAudioEngine.
  */
 @MainActor
-@Observable public class SpeechRecognizer {
+public class SpeechRecognizer: ObservableObject {
     public enum RecognizerError: Error {
         case nilRecognizer
         case notAuthorizedToRecognize
@@ -53,12 +51,12 @@ import CoreAudio
         }
     }
     
-    @MainActor public var transcript: String = ""
-        public var availableInputDevices: [AudioDevice] = []
-    public var availableOutputDevices: [AudioDevice] = []
-    public var selectedInputDevice: AudioDevice?
-    public var selectedOutputDevice: AudioDevice?
-    public var isTranscribingFromOutput: Bool = false
+    @Published public var transcript: String = ""
+    @Published public var availableInputDevices: [AudioDevice] = []
+    @Published public var availableOutputDevices: [AudioDevice] = []
+    @Published public var selectedInputDevice: AudioDevice?
+    @Published public var selectedOutputDevice: AudioDevice?
+    @Published var isTranscribingFromOutput: Bool = false
     
     private var audioEngine: AVAudioEngine?
     private var request: SFSpeechAudioBufferRecognitionRequest?
@@ -88,17 +86,19 @@ import CoreAudio
                     throw RecognizerError.notPermittedToRecord
                 }
                 
+                // Access to self properties must be on MainActor
                 await MainActor.run {
                     discoverAudioDevices()
                 }
             } catch {
+                var errorMessage = ""
+                if let error = error as? RecognizerError {
+                    errorMessage += error.message
+                } else {
+                    errorMessage += error.localizedDescription
+                }
+                // Update self.transcript on MainActor
                 await MainActor.run {
-                    var errorMessage = ""
-                    if let error = error as? RecognizerError {
-                        errorMessage += error.message
-                    } else {
-                        errorMessage += error.localizedDescription
-                    }
                     transcript = "<< \(errorMessage) >>"
                 }
             }
@@ -107,20 +107,17 @@ import CoreAudio
     
     public func startTranscribing() {
         Task {
+            // Access self inside MainActor for safety
             await transcribe()
         }
     }
 
     public func resetTranscript() {
-        Task { @MainActor in
-            reset()
-        }
+        reset()
     }
 
     public func stopTranscribing() {
-        Task { @MainActor in
-            reset()
-        }
+        reset()
     }
 
     public func selectInputDevice(_ device: AudioDevice?) {
@@ -137,7 +134,8 @@ import CoreAudio
 
     public func refreshAudioDevices() {
         discoverAudioDevices()
-    }    /**
+    }    
+    /**
      Begin transcribing audio.
      
      Creates a `SFSpeechRecognitionTask` that transcribes speech to text until you call `stopTranscribing()`.
@@ -148,36 +146,43 @@ import CoreAudio
             var errorMessage = ""
             let error = RecognizerError.recognizerIsUnavailable
             errorMessage += error.message
-            transcript = "<< \(errorMessage) >>"
+            // Must update transcript on main actor
+            await MainActor.run {
+                transcript = "<< \(errorMessage) >>"
+            }
             return
         }
         
         do {
             // Ensure audio engine operations happen on main thread
-            let (audioEngine, request) = try await Task { @MainActor in
+            let (audioEngine, request) = try await Task {
                 return try prepareEngine()
             }.value
-            self.audioEngine = audioEngine
-            self.request = request
-            self.task = recognizer.recognitionTask(with: request, resultHandler: { [weak self] result, error in
-                self?.recognitionHandler(audioEngine: audioEngine, result: result, error: error)
-            })
+            // Update self properties on MainActor
+            await MainActor.run {
+                self.audioEngine = audioEngine
+                self.request = request
+                self.task = recognizer.recognitionTask(with: request, resultHandler: { [weak self] result, error in
+                    // Because this is a completion handler, protect self access with Task @MainActor
+                    self?.recognitionHandler(audioEngine: audioEngine, result: result, error: error)
+                })
+            }
         } catch {
-            Task { @MainActor in
-                self.reset()
+            // Reset and update transcript on MainActor
+            await MainActor.run {
+                reset()
+                var errorMessage = ""
+                if let error = error as? RecognizerError {
+                    errorMessage += error.message
+                } else {
+                    errorMessage += error.localizedDescription
+                }
+                transcript = "<< \(errorMessage) >>"
             }
-            var errorMessage = ""
-            if let error = error as? RecognizerError {
-                errorMessage += error.message
-            } else {
-                errorMessage += error.localizedDescription
-            }
-            transcript = "<< \(errorMessage) >>"
         }
     }
     
     /// Reset the speech recognizer.
-    @MainActor
     private func reset() {
         task?.cancel()
         if let audioEngine = audioEngine {
@@ -189,7 +194,7 @@ import CoreAudio
         task = nil
     }
     
-    @MainActor private func prepareEngine() throws -> (AVAudioEngine, SFSpeechAudioBufferRecognitionRequest) {
+    private func prepareEngine() throws -> (AVAudioEngine, SFSpeechAudioBufferRecognitionRequest) {
         let audioEngine = AVAudioEngine()
         
         let request = SFSpeechAudioBufferRecognitionRequest()
@@ -209,22 +214,23 @@ import CoreAudio
         return (audioEngine, request)
     }
     
-    private nonisolated func recognitionHandler(audioEngine: AVAudioEngine, result: SFSpeechRecognitionResult?, error: Error?) {
+    private func recognitionHandler(audioEngine: AVAudioEngine, result: SFSpeechRecognitionResult?, error: Error?) {
         let receivedFinalResult = result?.isFinal ?? false
         let receivedError = error != nil
         
         if receivedFinalResult || receivedError {
             // CRITICAL FIX: Move audio engine operations to main thread to prevent threading violations
             Task { @MainActor [weak self] in
-                guard let self = self else { return }
                 audioEngine.stop()
                 audioEngine.inputNode.removeTap(onBus: 0)
+                // No direct self mutation here; handled below
             }
         }
         
         if let result {
             let transcriptionText = result.bestTranscription.formattedString
-            DispatchQueue.main.async { [weak self] in
+            // Update transcript safely on MainActor
+            Task { @MainActor [weak self] in
                 self?.transcript = transcriptionText
             }
         } else if let error {
@@ -234,7 +240,8 @@ import CoreAudio
             } else {
                 errorMessage += error.localizedDescription
             }
-            DispatchQueue.main.async { [weak self] in
+            // Update transcript safely on MainActor
+            Task { @MainActor [weak self] in
                 self?.transcript = "<< \(errorMessage) >>"
             }
         }
@@ -362,8 +369,9 @@ extension SFSpeechRecognizer {
 
 private func hasPermissionToRecord() async -> Bool {
     await withCheckedContinuation { continuation in
-        AVAudioApplication.requestRecordPermission { authorized in
+        AVCaptureDevice.requestAccess(for: .audio) { authorized in
             continuation.resume(returning: authorized)
         }
     }
 }
+
