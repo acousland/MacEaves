@@ -1,38 +1,40 @@
 # MacEaves
 
-**MacEaves** is a macOS app for real-time speech-to-text transcription, audio device monitoring, and AI-powered transcript analysis. It combines Apple’s SFSpeechRecognizer with AVFoundation and OpenAI’s API to give you fast, accurate transcriptions—plus summaries and action items—directly from your Mac.
+MacEaves is a macOS application designed to extract valuable insights from meetings in real time without saving any recordings or transcripts. By processing audio and generating insights live and only in memory, MacEaves maximizes user privacy while providing helpful meeting summaries and highlights.
 
 ## Features
 
-- **Speech-to-Text Transcription:**  
-  Live transcription using the system microphone or other audio devices.
+- **Real-time Meeting Summaries**  
+  Instantly generate summaries of ongoing meetings without storing any meeting data.
 
-- **AI-Powered Insights:**  
-  Generate concise, action-focused meeting summaries and extract action items using OpenAI’s GPT models.
+- **Live AI-Powered Insights**  
+  Extract insights on-the-fly using AI, ensuring that no recordings or transcripts are saved.
 
-- **Audio Device Picker:**  
-  View and select from all connected input and output devices.
+- **Speaker Diarization**  
+  Identify who said what during the meeting without retaining any audio or text data.
 
-- **VU Meter Monitoring:**  
-  Visualize real-time audio levels for a single device or all available audio devices.
+- **Intuitive User Interface**  
+  Easy-to-use interface to view live meeting highlights and action items.
 
-- **Modern, Intuitive UI:**  
-  Sidebar navigation, smooth scrolling, and responsive layouts.
+## Privacy First
 
----
+MacEaves is built with privacy as a core principle. The application processes all audio and transcripts only in memory and never saves recordings or transcriptions to disk. This ensures that all insights are extracted live on-the-fly and no sensitive meeting data is stored or retained, giving users complete peace of mind.
 
-## Setup
+## Installation
 
-### Requirements
+Download the latest release from the [releases page](https://github.com/yourrepo/maceaves/releases) and follow the installation instructions.
 
-- macOS (latest or as required by SFSpeechRecognizer)
-- An [OpenAI API key](https://platform.openai.com/account/api-keys) for AI-powered features
+## Usage
 
-### Installation
+1. Launch MacEaves before your meeting starts.
+2. Select the microphone input and begin your meeting.
+3. View real-time insights and summaries as the meeting progresses, all without any recordings being saved.
+4. When the meeting ends, close the app to clear all in-memory data.
 
-1. **Clone the repository:**
+## Contributing
 
-   ```sh
-   git clone https://github.com/[your-username]/MacEaves.git
-   cd MacEaves
+Contributions are welcome! Please open issues or submit pull requests on GitHub.
 
+## License
+
+MacEaves is released under the MIT License.

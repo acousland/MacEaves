@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AA07640A2D68F2F200B6E76F /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = AA0764092D68F2F200B6E76F /* README.md */; };
+		2E0897D92E38976800B65427 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2E0897D82E38976800B65427 /* README.md */; };
 		AA0764452D69002A00B6E76F /* ThemeKit in Frameworks */ = {isa = PBXBuildFile; productRef = AA0764442D69002A00B6E76F /* ThemeKit */; };
 		AA0765CC2D693E2D00B6E76F /* TimerKit in Frameworks */ = {isa = PBXBuildFile; productRef = AA0765CB2D693E2D00B6E76F /* TimerKit */; };
 		AA076A152D6CCFF200B6E76F /* TranscriptionKit in Frameworks */ = {isa = PBXBuildFile; productRef = AA076A142D6CCFF200B6E76F /* TranscriptionKit */; };
@@ -15,8 +15,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2E0897D82E38976800B65427 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		AA0763F72D68EFFA00B6E76F /* MacEaves.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacEaves.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AA0764092D68F2F200B6E76F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -68,7 +68,7 @@
 		AA0763EE2D68EFFA00B6E76F = {
 			isa = PBXGroup;
 			children = (
-				AA0764092D68F2F200B6E76F /* README.md */,
+				2E0897D82E38976800B65427 /* README.md */,
 				AA0763F92D68EFFA00B6E76F /* MacEaves */,
 				AA07640F2D68F35700B6E76F /* Configuration */,
 				AA07640C2D68F34900B6E76F /* LICENSE */,
@@ -159,7 +159,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA07640A2D68F2F200B6E76F /* README.md in Resources */,
+				2E0897D92E38976800B65427 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
