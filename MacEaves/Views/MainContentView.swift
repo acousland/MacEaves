@@ -30,9 +30,10 @@ enum NavigationTool: String, CaseIterable {
 
 struct MainContentView: View {
     @State private var selectedTool: NavigationTool = .transcription
+    @State private var columnVisibility: NavigationSplitViewVisibility = .all
     
     var body: some View {
-        NavigationSplitView {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
             // Sidebar
             List(NavigationTool.allCases, id: \.self, selection: $selectedTool) { tool in
                 NavigationLink(value: tool) {
@@ -68,7 +69,7 @@ struct MainContentView: View {
             }
             .navigationTitle(selectedTool.rawValue)
         }
-        .navigationSplitViewStyle(.balanced)
+        .navigationSplitViewStyle(.prominentDetail)
     }
 }
 

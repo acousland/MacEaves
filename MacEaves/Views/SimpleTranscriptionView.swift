@@ -14,7 +14,6 @@ struct SimpleTranscriptionView: View {
     @State private var isMonitoringOutput = false
     @State private var lastSummarizedLength = 0
     @State private var lastActionItemsLength = 0
-    @State private var openAIKey = ""
     
     var body: some View {
         GeometryReader { geometry in
@@ -85,96 +84,139 @@ struct SimpleTranscriptionView: View {
     @ViewBuilder
     private func configurationView(geometry: GeometryProxy) -> some View {
         VStack(spacing: 24) {
-            // Audio Device Configuration
-            VStack(alignment: .leading, spacing: 16) {
-                HStack {
-                    Image(systemName: "mic.fill")
-                        .foregroundColor(.blue)
-                    Text("Audio Device")
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                }
-                
-                if speechRecognizer.availableInputDevices.isEmpty {
-                    Text("No audio devices available")
-                        .foregroundColor(.secondary)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(8)
-                } else {
-                    Picker("Select Audio Device", selection: $speechRecognizer.selectedInputDevice) {
-                        Text("None").tag(nil as AudioDevice?)
-                        ForEach(speechRecognizer.availableInputDevices, id: \.id) { device in
-                            Text(device.name).tag(device as AudioDevice?)
-                        }
-                    }
-                    .pickerStyle(MenuPickerStyle())
-                    .padding()
-                    .background(Color(NSColor.controlBackgroundColor))
-                    .cornerRadius(8)
-                }
-            }
-            
-            // OpenAI Configuration
-            VStack(alignment: .leading, spacing: 16) {
-                HStack {
-                    Image(systemName: "brain")
-                        .foregroundColor(.purple)
-                    Text("AI Configuration")
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                }
-                
-                SecureField("OpenAI API Key", text: $openAIKey)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
-                    .background(Color(NSColor.controlBackgroundColor))
-                    .cornerRadius(8)
-            }
-            
-            // Control Buttons
-            HStack(spacing: 20) {
-                Button(action: isRunning ? stopTranscription : startTranscription) {
-                    HStack {
-                        Image(systemName: isRunning ? "stop.circle.fill" : "play.circle.fill")
-                        Text(isRunning ? "Stop Recording" : "Start Recording")
-                    }
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 12)
-                    .background(isRunning ? Color.red : Color.green)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                }
-                .disabled(speechRecognizer.selectedInputDevice == nil)
-                
-                if !speechRecognizer.transcript.isEmpty {
-                    Button("Generate Summary") {
-                        Task {
-                            await generateSummary()
-                        }
-                    }
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 12)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                    
-                    Button("Generate Action Items") {
-                        Task {
-                            await generateActionItems()
-                        }
-                    }
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 12)
-                    .background(Color.orange)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                }
-            }
+            audioDeviceSection()
+            openAISection()
+            controlButtonsSection()
         }
         .padding(.horizontal, 32)
         .frame(maxWidth: min(600, geometry.size.width * 0.8))
+    }
+    
+    @ViewBuilder
+    private func audioDeviceSection() -> some View {
+        // Audio Device Configuration
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Image(systemName: "mic.fill")
+                    .foregroundColor(.blue)
+                Text("Audio Device")
+                    .font(.headline)
+                    .fontWeight(.semibold)
+            }
+            
+            if speechRecognizer.availableInputDevices.isEmpty {
+                Text("No audio devices available")
+                    .foregroundColor(.secondary)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(8)
+            } else {
+                Picker("Select Audio Device", selection: $speechRecognizer.selectedInputDevice) {
+                    Text("None").tag(nil as AudioDevice?)
+                    ForEach(speechRecognizer.availableInputDevices, id: \.id) { device in
+                        Text(device.name).tag(Optional(device))
+                    }
+                }
+                .pickerStyle(MenuPickerStyle())
+                .padding()
+                .background(Color(NSColor.controlBackgroundColor))
+                .cornerRadius(8)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func openAISection() -> some View {
+        // OpenAI Configuration Status
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Image(systemName: "brain")
+                    .foregroundColor(.purple)
+                Text("AI Configuration")
+                    .font(.headline)
+                    .fontWeight(.semibold)
+            }
+            
+            HStack {
+                Image(systemName: openAIService.isConfigured ? "checkmark.circle.fill" : "xmark.circle.fill")
+                    .foregroundColor(openAIService.isConfigured ? .green : .red)
+                
+                Text(openAIService.isConfigured ? "OpenAI API configured" : "OpenAI API not configured")
+                    .foregroundColor(openAIService.isConfigured ? .primary : .secondary)
+                
+                Spacer()
+            }
+            .padding()
+            .background(openAIService.isConfigured ? Color.green.opacity(0.1) : Color.red.opacity(0.1))
+            .cornerRadius(8)
+            
+            if !openAIService.isConfigured {
+                Text("Please add your OpenAI API key to Config.plist")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func controlButtonsSection() -> some View {
+        HStack(spacing: 20) {
+            recordingButton
+            
+            if !speechRecognizer.transcript.isEmpty {
+                summaryButton
+                actionItemsButton
+            }
+        }
+    }
+    
+    private var recordingButton: some View {
+        let buttonAction = isRunning ? stopTranscription : startTranscription
+        let iconName = isRunning ? "stop.circle.fill" : "play.circle.fill"
+        let buttonText = isRunning ? "Stop Recording" : "Start Recording"
+        let buttonColor = isRunning ? Color.red : Color.green
+        
+        return Button(action: buttonAction) {
+            HStack {
+                Image(systemName: iconName)
+                Text(buttonText)
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 12)
+            .background(buttonColor)
+            .foregroundColor(.white)
+            .cornerRadius(8)
+        }
+        .disabled(speechRecognizer.selectedInputDevice == nil)
+    }
+    
+    @ViewBuilder
+    private var summaryButton: some View {
+        Button("Generate Summary") {
+            Task {
+                await generateSummary()
+            }
+        }
+        .padding(.horizontal, 24)
+        .padding(.vertical, 12)
+        .background(Color.blue)
+        .foregroundColor(.white)
+        .cornerRadius(8)
+    }
+    
+    @ViewBuilder
+    private var actionItemsButton: some View {
+        Button("Generate Action Items") {
+            Task {
+                await generateActionItems()
+            }
+        }
+        .padding(.horizontal, 24)
+        .padding(.vertical, 12)
+        .background(Color.orange)
+        .foregroundColor(.white)
+        .cornerRadius(8)
     }
     
     @ViewBuilder

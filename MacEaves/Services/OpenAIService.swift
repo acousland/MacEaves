@@ -52,6 +52,11 @@ public class OpenAIService: ObservableObject {
     @Published public var lastActionItemsError: String?
     
     private var apiKey: String?
+    
+    /// Returns true if the OpenAI service is properly configured with an API key
+    public var isConfigured: Bool {
+        return apiKey != nil && !apiKey!.isEmpty
+    }
     private var baseURL: String = "https://api.openai.com/v1"
     private var model: String = "gpt-4o-mini"
     
