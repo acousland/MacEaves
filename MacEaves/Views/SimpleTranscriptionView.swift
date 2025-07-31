@@ -163,11 +163,6 @@ struct SimpleTranscriptionView: View {
     private func controlButtonsSection() -> some View {
         HStack(spacing: 20) {
             recordingButton
-            
-            if !speechRecognizer.transcript.isEmpty {
-                summaryButton
-                actionItemsButton
-            }
         }
     }
     
@@ -222,6 +217,17 @@ struct SimpleTranscriptionView: View {
     @ViewBuilder
     private func runningContentView(geometry: GeometryProxy) -> some View {
         VStack(spacing: 24) {
+            // Control buttons at the top when running
+            HStack(spacing: 20) {
+                recordingButton
+                
+                if !speechRecognizer.transcript.isEmpty {
+                    summaryButton
+                    actionItemsButton
+                }
+            }
+            .padding(.bottom, 16)
+            
             if !speechRecognizer.transcript.isEmpty {
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {

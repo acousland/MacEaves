@@ -161,11 +161,11 @@ public class OpenAIService: ObservableObject {
         let messages = [
             [
                 "role": "system",
-                "content": "You are a helpful assistant that extracts action items from conversations. Focus specifically on commitments, tasks, and follow-ups where people say they will do something. Look for phrases like 'I will...', 'I'll...', 'I need to...', 'I should...', 'Let me...', or similar commitments. Format as a clear bulleted list with who is doing what."
+                "content": "You are a helpful assistant that extracts action items from conversations. Focus specifically on commitments, tasks, and follow-ups where people say they will do something. Look for phrases like 'I will...', 'I'll...', 'I need to...', 'I should...', 'Let me...', or similar commitments. Format as a clear bulleted list with who is doing what. Group action items by themes or categories when appropriate (e.g., Technical Tasks, Administrative Items, Follow-ups, etc.)."
             ],
             [
                 "role": "user",
-                "content": "Please extract all action items and commitments from the following transcript, focusing on what people said they would do:\n\n\(transcript)"
+                "content": "Please extract all action items and commitments from the following transcript, focusing on what people said they would do. Group them by themes or categories where appropriate:\n\n\(transcript)"
             ]
         ]
         
@@ -301,11 +301,11 @@ public class OpenAIService: ObservableObject {
         let messages = [
             [
                 "role": "system",
-                "content": "You are a helpful assistant that creates concise summaries. Focus on key points, decisions, and action items. Keep summaries clear and well-organized."
+                "content": "You are a helpful assistant that creates concise summaries. Focus on key points, decisions, and action items. Organize content by themes or topics when appropriate. Keep summaries clear and well-organized, grouping related discussions together."
             ],
             [
                 "role": "user",
-                "content": "Please provide a concise summary of the following transcript:\n\n\(transcript)"
+                "content": "Please provide a concise summary of the following transcript, organizing the content by themes or topics where appropriate:\n\n\(transcript)"
             ]
         ]
         
