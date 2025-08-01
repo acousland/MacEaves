@@ -14,6 +14,8 @@ struct SimpleTranscriptionView: View {
     @State private var isMonitoringOutput = false
     @State private var lastSummarizedLength = 0
     @State private var lastActionItemsLength = 0
+    @State private var lastTopicContextLength = 0
+    @State private var autoUpdateTimer: Timer?
     
     var body: some View {
         GeometryReader { geometry in
@@ -61,6 +63,10 @@ struct SimpleTranscriptionView: View {
                     print("🔄 Audio devices refreshed")
                 }
             }
+        }
+        .onDisappear {
+            // Clean up timer when view disappears
+            stopAutoUpdateTimer()
         }
     }
     
@@ -215,6 +221,20 @@ struct SimpleTranscriptionView: View {
     }
     
     @ViewBuilder
+    private var topicContextButton: some View {
+        Button("Current Topic") {
+            Task {
+                await generateTopicContext()
+            }
+        }
+        .padding(.horizontal, 24)
+        .padding(.vertical, 12)
+        .background(Color.purple)
+        .foregroundColor(.white)
+        .cornerRadius(8)
+    }
+    
+    @ViewBuilder
     private func runningContentView(geometry: GeometryProxy) -> some View {
         VStack(spacing: 24) {
             // Control buttons at the top when running
@@ -224,6 +244,7 @@ struct SimpleTranscriptionView: View {
                 if !speechRecognizer.transcript.isEmpty {
                     summaryButton
                     actionItemsButton
+                    topicContextButton
                 }
             }
             .padding(.bottom, 16)
@@ -293,6 +314,28 @@ struct SimpleTranscriptionView: View {
                 }
                 .frame(maxWidth: min(800, geometry.size.width * 0.9))
             }
+            
+            if !openAIService.topicContext.isEmpty {
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack {
+                        Image(systemName: "bubble.left.and.bubble.right")
+                            .foregroundColor(.purple)
+                        Text("Current Topic")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                    }
+                    
+                    ScrollView {
+                        Text(openAIService.topicContext)
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.purple.opacity(0.1))
+                            .cornerRadius(8)
+                    }
+                    .frame(height: 100)
+                }
+                .frame(maxWidth: min(800, geometry.size.width * 0.9))
+            }
         }
         .padding(.horizontal, 32)
     }
@@ -301,11 +344,27 @@ struct SimpleTranscriptionView: View {
         speechRecognizer.resetTranscript()
         speechRecognizer.startTranscribing()
         isRunning = true
+        
+        // Reset summary tracking for new session
+        lastSummarizedLength = 0
+        lastActionItemsLength = 0
+        lastTopicContextLength = 0
+        
+        // Clear previous summaries to start fresh
+        openAIService.summary = ""
+        openAIService.actionItems = ""
+        openAIService.topicContext = ""
+        
+        // Start auto-update timer (every 10 seconds)
+        startAutoUpdateTimer()
     }
     
     private func stopTranscription() {
         speechRecognizer.stopTranscribing()
         isRunning = false
+        
+        // Stop auto-update timer
+        stopAutoUpdateTimer()
     }
     
     @MainActor
@@ -313,10 +372,18 @@ struct SimpleTranscriptionView: View {
         print("🎯 Debug: generateSummary() called")
         print("📝 Current transcript: '\(speechRecognizer.transcript)'")
         print("📏 Transcript length: \(speechRecognizer.transcript.count)")
+        print("📏 Last summarized length: \(lastSummarizedLength)")
         
         guard !speechRecognizer.transcript.isEmpty else { 
             print("⚠️ Warning: Transcript is empty, skipping summary generation")
             return 
+        }
+        
+        // Check if there's new content since last summary
+        let hasNewContent = speechRecognizer.transcript.count > lastSummarizedLength
+        if !hasNewContent && !openAIService.summary.isEmpty {
+            print("ℹ️ No new content since last summary, skipping generation")
+            return
         }
         
         print("🚀 Starting OpenAI summary generation...")
@@ -358,6 +425,56 @@ struct SimpleTranscriptionView: View {
             // Also update the error wrapper for user display
             errorWrapper = ErrorWrapper(error: error, guidance: "Please check your internet connection and API key configuration.")
         }
+    }
+    
+    @MainActor
+    private func generateTopicContext() async {
+        print("🎯 Debug: generateTopicContext() called")
+        print("📝 Current transcript: '\(speechRecognizer.transcript)'")
+        print("📏 Transcript length: \(speechRecognizer.transcript.count)")
+        
+        guard !speechRecognizer.transcript.isEmpty else { 
+            print("⚠️ Warning: Transcript is empty, skipping topic context generation")
+            return 
+        }
+        
+        print("🚀 Starting OpenAI topic context generation...")
+        
+        do {
+            try await openAIService.generateTopicContext(from: speechRecognizer.transcript)
+            lastTopicContextLength = speechRecognizer.transcript.count
+            print("✅ Topic context generation completed successfully")
+        } catch {
+            let errorMessage = "Error generating topic context: \(error)"
+            print("❌ \(errorMessage)")
+            
+            // Also update the error wrapper for user display
+            errorWrapper = ErrorWrapper(error: error, guidance: "Please check your internet connection and API key configuration.")
+        }
+    }
+    
+    // MARK: - Timer Management
+    
+    private func startAutoUpdateTimer() {
+        // Cancel any existing timer
+        stopAutoUpdateTimer()
+        
+        // Start new timer for 10-second intervals
+        autoUpdateTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { _ in
+            // Only update if we're still recording
+            Task { @MainActor in
+                if isRunning {
+                    await generateSummary()
+                    await generateActionItems()
+                    await generateTopicContext()
+                }
+            }
+        }
+    }
+    
+    private func stopAutoUpdateTimer() {
+        autoUpdateTimer?.invalidate()
+        autoUpdateTimer = nil
     }
 }
 

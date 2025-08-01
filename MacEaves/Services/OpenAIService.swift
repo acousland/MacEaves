@@ -51,6 +51,10 @@ public class OpenAIService: ObservableObject {
     @Published public var isGeneratingActionItems: Bool = false
     @Published public var lastActionItemsError: String?
     
+    @Published public var topicContext: String = ""
+    @Published public var isGeneratingTopicContext: Bool = false
+    @Published public var lastTopicContextError: String?
+    
     private var apiKey: String?
     
     /// Returns true if the OpenAI service is properly configured with an API key
@@ -267,7 +271,8 @@ public class OpenAIService: ObservableObject {
         print("📤 Making API request...")
 
         do {
-            let summary = try await requestSummary(transcript: transcript, apiKey: apiKey!)
+            let previousSummary = self.summary.isEmpty ? nil : self.summary
+            let summary = try await requestSummary(transcript: transcript, previousSummary: previousSummary, apiKey: apiKey!)
             print("✅ Summary generated successfully (length: \(summary.count) characters)")
             self.summary = summary
             self.isGeneratingSummary = false
@@ -283,7 +288,7 @@ public class OpenAIService: ObservableObject {
     
     /// Requests summary from OpenAI API.
     /// Note: Accesses to self's properties are done on MainActor for thread safety and Sendable compliance.
-    private func requestSummary(transcript: String, apiKey: String) async throws -> String {
+    private func requestSummary(transcript: String, previousSummary: String?, apiKey: String) async throws -> String {
         let (baseURL, model) = (self.baseURL, self.model)
         let urlString = "\(baseURL)/chat/completions"
         print("🌐 API URL: \(urlString)")
@@ -298,14 +303,27 @@ public class OpenAIService: ObservableObject {
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
+        let systemMessage: String
+        let userMessage: String
+        
+        if let previousSummary = previousSummary, !previousSummary.isEmpty && !previousSummary.contains("No content to summarize yet") {
+            // Update existing summary
+            systemMessage = "You are a helpful assistant that updates and refines meeting summaries. IMPORTANT: Preserve the existing thematic groupings and structure. Only add new information or refine existing content. Do not reorganize or change the established themes unless absolutely necessary. Keep the same section headings and organization."
+            userMessage = "Here is the current summary:\n\n\(previousSummary)\n\nHere is the full transcript (which includes previous content plus new content):\n\n\(transcript)\n\nPlease update the summary by adding any new information or refining existing content. Keep the same thematic structure and groupings. Only add new themes if there is genuinely new topic areas not covered in the existing summary."
+        } else {
+            // Create initial summary
+            systemMessage = "You are a helpful assistant that creates concise summaries. Focus on key points, decisions, and action items. Organize content by themes or topics when appropriate. Keep summaries clear and well-organized, grouping related discussions together."
+            userMessage = "Please provide a concise summary of the following transcript, organizing the content by themes or topics where appropriate:\n\n\(transcript)"
+        }
+        
         let messages = [
             [
                 "role": "system",
-                "content": "You are a helpful assistant that creates concise summaries. Focus on key points, decisions, and action items. Organize content by themes or topics when appropriate. Keep summaries clear and well-organized, grouping related discussions together."
+                "content": systemMessage
             ],
             [
                 "role": "user",
-                "content": "Please provide a concise summary of the following transcript, organizing the content by themes or topics where appropriate:\n\n\(transcript)"
+                "content": userMessage
             ]
         ]
         
@@ -372,6 +390,171 @@ public class OpenAIService: ObservableObject {
             
             let trimmedContent = content.trimmingCharacters(in: .whitespacesAndNewlines)
             print("✅ Summary extracted: \(trimmedContent.count) characters")
+            return trimmedContent
+            
+        } catch {
+            print("❌ Network error: \(error)")
+            throw OpenAIError.networkError(error.localizedDescription)
+        }
+    }
+    
+    /// Generates topic context from a transcript.
+    /// Note: All access to self and its properties is done on MainActor to ensure data race safety and comply with the Sendable model.
+    public func generateTopicContext(from transcript: String) async throws {
+        print("🎯 Debug: Starting topic context generation...")
+        print("📝 Transcript length: \(transcript.count) characters")
+        
+        let apiKey = self.apiKey
+        if apiKey == nil || apiKey!.isEmpty {
+            let error = "OpenAI API key not configured"
+            print("❌ Error: \(error)")
+            self.lastTopicContextError = error
+            throw OpenAIError.invalidConfiguration
+        }
+        print("🔑 API key available (length: \(apiKey!.count))")
+        
+        if transcript.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            print("⚠️ Warning: Empty transcript provided")
+            self.topicContext = "--- No topic detected ---"
+            return
+        }
+
+        self.isGeneratingTopicContext = true
+        self.lastTopicContextError = nil
+        
+        print("📤 Making API request for topic context...")
+
+        do {
+            let topicContext = try await requestTopicContext(transcript: transcript, apiKey: apiKey!)
+            print("✅ Topic context generated successfully (length: \(topicContext.count) characters)")
+            self.topicContext = topicContext
+            self.isGeneratingTopicContext = false
+        } catch {
+            let errorMessage = "Failed to generate topic context: \(error.localizedDescription)"
+            print("❌ API Error: \(errorMessage)")
+            print("🔍 Error details: \(error)")
+            self.lastTopicContextError = errorMessage
+            self.isGeneratingTopicContext = false
+            throw error
+        }
+    }
+    
+    /// Requests topic context from OpenAI API.
+    /// Note: Accesses to self's properties are done on MainActor for thread safety and Sendable compliance.
+    private func requestTopicContext(transcript: String, apiKey: String) async throws -> String {
+        let (baseURL, model) = (self.baseURL, self.model)
+        let urlString = "\(baseURL)/chat/completions"
+        print("🌐 API URL: \(urlString)")
+        
+        guard let url = URL(string: urlString) else {
+            print("❌ Error: Invalid URL - \(urlString)")
+            throw OpenAIError.invalidURL
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let systemMessage = """
+You are an assistant who pinpoints and summarises **only** the latest substantive \
+topic in a conversation transcript. A "substantive topic" is the final cluster of \
+at least two turns that share a common subject matter, excluding greetings, \
+house-keeping, or meta-comments.  
+
+Guidelines for your reply  
+• Produce exactly 3–4 bullet points, each starting with "• ".  
+• Keep every point under 15 words, use Australian English, and include Oxford commas.  
+• Do not mention earlier topics or the rules themselves.  
+• If you cannot detect a substantive topic, reply with exactly:  
+  --- No topic detected ---
+"""
+        
+        let userMessage = """
+Identify the latest substantive topic in the transcript below and summarise it in \
+3–4 ultra-concise bullet points. Follow the system guidelines strictly. If no topic \
+fits the definition, output: --- No topic detected ---
+
+### TRANSCRIPT START
+\(transcript)
+### TRANSCRIPT END
+"""
+        
+
+
+        let messages = [
+            [
+                "role": "system", 
+                "content": systemMessage
+            ],
+            [
+                "role": "user",
+                "content": userMessage
+            ]
+        ]
+        
+        let requestBody: [String: Any] = [
+            "model": model,
+            "messages": messages,
+            "max_tokens": 150,
+            "temperature": 0.2
+        ]
+        
+        print("📋 Request body: \(requestBody)")
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
+            print("📤 Request prepared, sending...")
+        } catch {
+            print("❌ Error serializing request body: \(error)")
+            throw OpenAIError.networkError("Failed to serialize request: \(error.localizedDescription)")
+        }
+        
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            print("📥 Response received")
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                print("❌ Error: Invalid response type")
+                throw OpenAIError.invalidResponse
+            }
+            
+            print("📊 HTTP Status: \(httpResponse.statusCode)")
+            
+            // Log response data for debugging
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("📄 Response body: \(responseString)")
+            }
+            
+            guard httpResponse.statusCode == 200 else {
+                if let errorData = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let error = errorData["error"] as? [String: Any],
+                   let message = error["message"] as? String {
+                    print("❌ API Error: \(message)")
+                    throw OpenAIError.apiError(message)
+                }
+                print("❌ HTTP Error: \(httpResponse.statusCode)")
+                throw OpenAIError.httpError(httpResponse.statusCode)
+            }
+            
+            guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+                print("❌ Error: Could not parse JSON response")
+                throw OpenAIError.invalidResponseFormat
+            }
+            
+            print("✅ JSON parsed successfully")
+            
+            guard let choices = json["choices"] as? [[String: Any]],
+                  let firstChoice = choices.first,
+                  let message = firstChoice["message"] as? [String: Any],
+                  let content = message["content"] as? String else {
+                print("❌ Error: Invalid response format - missing content")
+                print("🔍 JSON structure: \(json)")
+                throw OpenAIError.invalidResponseFormat
+            }
+            
+            let trimmedContent = content.trimmingCharacters(in: .whitespacesAndNewlines)
+            print("✅ Topic context extracted: \(trimmedContent.count) characters")
             return trimmedContent
             
         } catch {
